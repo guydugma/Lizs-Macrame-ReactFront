@@ -1,0 +1,7 @@
+.bg {
+  width: 350px;
+  height: 350px;
+  background-size: contain;
+  background-position: center;
+  will-change: opacity;
+}
