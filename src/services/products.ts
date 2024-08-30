@@ -1,18 +1,10 @@
 import axios from "axios";
 import { ProductType } from "../@types/types";
 
-export const productsUrl = new URL(
-  `${import.meta.env.VITE_SERVER_URL}/api/products`
-);
+export const productsUrl = `${import.meta.env.VITE_SERVER_URL}/api/products`;
 
-export const getProducts = async () => {
-  try {
-    const response = await axios.get(productsUrl.href);
-    console.log(response.data);
-    return response.data;
-  } catch (e) {
-    console.log(e);
-  }
+export const getProducts = () => {
+  return axios.get(productsUrl);
 };
 
 export const getProduct = (id: string) => {
@@ -25,7 +17,7 @@ export const addProduct = (product: ProductType, images: string[]) => {
   images.forEach((image) => {
     formData.append("images", image);
   });
-  return axios.post(productsUrl.href, formData, {
+  return axios.post(productsUrl, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
