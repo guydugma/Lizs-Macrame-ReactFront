@@ -12,11 +12,13 @@ import {
   MenuItem,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import { Form } from "react-router-dom";
 import { deleteStone, editStone } from "../../services/stones";
 import { StoneContext } from "../../contexts/StoneContext";
 import { DeleteAlertContext } from "../../contexts/DeleteAlertContext";
+import { AlertContext } from "../../contexts/AlertContext";
 
 const zodiacs = [
   "מאזניים",
@@ -40,14 +42,12 @@ type Props = {
 
 const EditStone = (props: Props) => {
   let currentStone = props.stone;
-  const [alert, setAlert] = useState(false);
-  const [alertMsg, setAlertMsg] = useState("");
-  const [alertSeverity, setAlertSeverity] = useState("success");
   const [zodiac, setZodiac] = useState<string>();
-  const [image, setImage] = useState({ preview: "", raw: "" });
+  const [image, setImage] = useState<{ preview: string; raw: string }>();
   const [stone, setStone] = useState<StoneType>(currentStone);
   const stoneContext = useContext(StoneContext);
   const deleteAlertContext = useContext(DeleteAlertContext);
+  const { setAlert } = useContext(AlertContext);
 
   const {
     register,
@@ -55,13 +55,6 @@ const EditStone = (props: Props) => {
     handleSubmit,
     formState: { errors },
   } = useForm<StoneType>({});
-
-  const showAlert = (msg: string, severity: string) => {
-    setAlert(true);
-    setTimeout(() => {
-      setAlert(false);
-    }, 2000);
-  };
 
   const onDelete = () => {
     deleteAlertContext.setMessage(stone.name);
@@ -71,10 +64,10 @@ const EditStone = (props: Props) => {
           //201 response
           stoneContext.refresh();
           props.close();
-          showAlert("Stone deleted successfully", "success");
+          setAlert("האבן נמחקה בהצלחה", "success");
         })
         .catch((e) => {
-          showAlert("There was an error deleting the stone", "error");
+          setAlert("הייתה בעיה במחיקת האבן", "error");
         });
     });
     deleteAlertContext.toggleAlert();
@@ -82,17 +75,17 @@ const EditStone = (props: Props) => {
 
   const onRegister = (data: StoneType) => {
     data.zodiac = zodiac ?? "";
-    data.imageFileName = "";
-    editStone(stone._id, image.raw, data)
+    data.imageFileName = image?.raw ?? stone.imageFileName;
+    editStone(stone._id, data, image?.raw)
       .then((res) => {
         //201 response
-        showAlert("Stone updated successfully", "success");
+        setAlert("האבן עודכנה בהצלחה", "success");
         stoneContext.refresh();
         props.close();
         setStone(res.data);
       })
       .catch((e) => {
-        showAlert("There was an error updating the stone", "error");
+        setAlert("הייתה בעיה בעדכון האבן", "error");
       });
   };
 
@@ -131,7 +124,7 @@ const EditStone = (props: Props) => {
                 <TextField
                   defaultValue={stone.name}
                   placeholder={stone.name}
-                  label="Name"
+                  label="שם"
                   type="text"
                   {...register("name", {
                     required: "This field is mandatory",
@@ -141,7 +134,9 @@ const EditStone = (props: Props) => {
                   fullWidth
                 />
                 {errors.name && (
-                  <p className="text-red-500">{errors.name.message}</p>
+                  <Typography variant="body1" color={"error"}>
+                    {errors.name.message}
+                  </Typography>
                 )}
 
                 {/* Zodiac */}
@@ -169,7 +164,7 @@ const EditStone = (props: Props) => {
               <TextField
                 defaultValue={stone.description}
                 placeholder={stone.description}
-                label="Description"
+                label="תיאור"
                 type="text"
                 {...register("description", {
                   required: "This field is mandatory",
@@ -178,7 +173,9 @@ const EditStone = (props: Props) => {
                 multiline
               />
               {errors.description && (
-                <p className="text-red-500">{errors.description.message}</p>
+                <Typography variant="body1" color={"error"}>
+                  {errors.description.message}
+                </Typography>
               )}
 
               {/* Image */}
@@ -201,9 +198,9 @@ const EditStone = (props: Props) => {
                     alignItems: "center",
                   }}
                 >
-                  {image.preview && (
+                  {image?.preview && (
                     <img
-                      src={image.preview}
+                      src={image?.preview}
                       alt="image"
                       className="w-full h-full object-contain"
                     />
@@ -240,7 +237,6 @@ const EditStone = (props: Props) => {
           </Stack>
         </Form>
       </AccordionDetails>
-      {alert && <Alert></Alert>}
     </>
   );
 };

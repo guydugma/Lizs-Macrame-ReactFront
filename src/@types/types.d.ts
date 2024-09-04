@@ -43,6 +43,11 @@ export type StoneType = {
   imageFileName: string;
 };
 
+export type pageLink = {
+  heb: string;
+  eng: string;
+};
+
 export type CategoryType = {
   _id: string;
   hebTitle: string;

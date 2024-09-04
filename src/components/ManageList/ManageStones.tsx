@@ -28,13 +28,6 @@ const ManageStones = () => {
   const [stones, setStones] = useState<StoneType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>();
-  const {
-    deleteAlert,
-    setDeleteAlert,
-    setMsgString,
-    approveFunction,
-    setApproveFunction,
-  } = React.useContext(DeleteAlertContext);
   const [expanded, setExpanded] = React.useState<string | false>(false);
   const stonesContext = useContext(StoneContext);
 
@@ -56,17 +49,6 @@ const ManageStones = () => {
 
   const close = () => {
     setExpanded(false);
-  };
-
-  const openAlert = (msg: string, itemsToDelete: number[]) => {
-    setMsgString(msg);
-    setDeleteAlert(true);
-
-    setApproveFunction(() => {
-      itemsToDelete.forEach((item) => {
-        console.log(item);
-      });
-    });
   };
 
   return (
@@ -116,7 +98,7 @@ const ManageStones = () => {
               <Typography>{stone.name}</Typography>
             </AccordionSummary>
             {expanded === `panel${stones.indexOf(stone) + 1}` && (
-              <EditStone stone={stone} />
+              <EditStone close={close} stone={stone} />
             )}
           </Accordion>
         ))}

@@ -5,14 +5,14 @@ export const stonesUrl = `${import.meta.env.VITE_SERVER_URL}/api/stones`;
 
 export const getStones = () => axios.get(stonesUrl);
 
-export const editStone = (stoneId: string, image: string, stone: any) => {
+export const editStone = (stoneId: string, stone: any, image?: string) => {
   let formData = new FormData();
-  console.log(stone);
   formData.append("stone", JSON.stringify(stone));
-  formData.append("image", image);
+  image && formData.append("image", image);
   return axios.put(`${stonesUrl}/${stoneId}`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
+      "x-auth-token": localStorage.getItem("token"),
     },
   });
 };
@@ -24,9 +24,14 @@ export const addStone = async (stone: StoneType, image: string) => {
   return axios.post(stonesUrl, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
+      "x-auth-token": localStorage.getItem("token"),
     },
   });
 };
 
 export const deleteStone = (stoneId: string) =>
-  axios.delete(`${stonesUrl}/${stoneId}`);
+  axios.delete(`${stonesUrl}/${stoneId}`, {
+    headers: {
+      "x-auth-token": localStorage.getItem("token"),
+    },
+  });

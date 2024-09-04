@@ -24,101 +24,157 @@ import {
 } from "react-router-dom";
 import auth, { userDetails } from "../../services/auth";
 import { router } from "../../routes/router";
-import { colors, Slide, Stack } from "@mui/material";
+import { colors, Drawer, Slide, Stack } from "@mui/material";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useContext } from "react";
 import ProfileOptions from "./ProfileOptions/ProfileOptions";
 import SearchBar from "./SearchBar/SearchBar";
-import NavLinks from "./NavLinks/NavLinks";
+
 import PetsIcon from "@mui/icons-material/Pets";
 import "./Navbar.scss";
-
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CartBtn from "../CartBtn/CartBtn";
 import { ScrollContext } from "../../contexts/ScrollContext";
 import NavLogo from "./NavLogo/NavLogo";
+import { CategoryContext } from "../../contexts/CategoryContext";
+import { LogoutBtn } from "../LogoutBtn/LogoutBtn";
+import { Pages } from "@mui/icons-material";
+import { pageLink } from "../../@types/types";
+import NavBtn from "./NavBtn/NavBtn";
 
-const generalPages = [
+const generalPages: pageLink[] = [
   { heb: "עלינו", eng: "about" },
-  { heb: "קטגוריות", eng: "categories" },
   { heb: "אבנים", eng: "Stones" },
 ];
 
-const noUserPages = [
-  ...generalPages,
+const noUserPages: pageLink[] = [
   { heb: "הרשמה", eng: "register" },
   { heb: "התחברות", eng: "login" },
 ];
 
-const userPages = [...generalPages];
-
-const adminUserPages = [...generalPages, { heb: "ניהול", eng: "manage" }];
+const adminUserPages = [{ heb: "ניהול", eng: "manage" }];
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const authContext = useContext(AuthContext);
   const { isLoggedIn, userPrevileges, login, logout } = useContext(AuthContext);
   const scrollContext = React.useContext(ScrollContext);
-
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
+  const [openCategories, setOpenCategories] = React.useState(false);
+  const categoriesPages: pageLink[] = useContext(
+    CategoryContext
+  ).categories.map((c) => {
+    return { heb: c.hebTitle, eng: c.engLink };
+  });
+  const containerRef = React.useRef<HTMLElement>(null);
+  const toggleOpenCategories = () => {
+    setOpenCategories(!openCategories);
   };
 
   return (
     <Slide appear={false} direction="down" in={scrollContext.fixHeader}>
-      <AppBar
-        className="site-nav"
+      <Box
         sx={{
-          direction: "rtl",
           width: "100%",
-          position: "sticky",
-          display: "flex",
+          top: 0,
+          flexDirection: "column",
+          position: "fixed",
         }}
       >
-        <Container
-          sx={{ display: "flex", justifyContent: "center", width: "100%" }}
-          maxWidth={"xl"}
+        <AppBar
+          className="site-nav"
+          sx={{
+            position: "relative",
+            direction: "rtl",
+            width: "100%",
+            display: "flex",
+          }}
         >
-          <Box
+          <Container
             sx={{
               display: "flex",
-              width: "100%",
-              flexDirection: { xs: "row", sm: "column-reverse" },
               alignItems: "center",
               justifyContent: "space-between",
+              width: "100%",
+              flexDirection: { xs: "row", sm: "column-reverse" },
             }}
+            maxWidth={"xl"}
           >
             <Toolbar
               disableGutters
               sx={{
+                position: "relative",
+                zIndex: 2000,
                 width: { xs: "auto", sm: "100%" },
                 display: "flex",
-                justifyContent: "center",
+                justifyContent: "space-between",
                 gap: 1,
               }}
             >
-              {isLoggedIn && userPrevileges.isAdmin && (
-                <NavLinks pages={adminUserPages} />
-              )}
-              {isLoggedIn && !userPrevileges.isAdmin && (
-                <NavLinks pages={userPages} />
-              )}
+              {generalPages.map((page) => (
+                <NavBtn key={page.eng} page={page} />
+              ))}
+              <Button
+                onClick={toggleOpenCategories}
+                sx={{ color: "inherit" }}
+                endIcon={<ExpandMoreIcon />}
+              >
+                <Typography variant="h6">קטגוריות</Typography>
+              </Button>
+              {isLoggedIn &&
+                userPrevileges.isAdmin &&
+                adminUserPages.map((page) => (
+                  <NavBtn key={page.eng} page={page} />
+                ))}
               {/* <SearchBar /> */}
-              {!isLoggedIn && <NavLinks pages={noUserPages} />}
+              {!isLoggedIn &&
+                noUserPages.map((page) => (
+                  <NavBtn key={page.eng} page={page} />
+                ))}
+              {authContext.isLoggedIn && <LogoutBtn />}
+              <CartBtn />
             </Toolbar>
             <NavLogo />
-            <Box sx={{ display: { xs: "flex", sm: "none" } }}>
-              <CartBtn />
+          </Container>
+        </AppBar>
+        <Box ref={containerRef} sx={{}}>
+          <Slide
+            direction="down"
+            in={openCategories}
+            container={containerRef.current}
+            mountOnEnter
+            unmountOnExit
+          >
+            <Box
+              sx={{
+                display: "flex",
+                overflow: "hidden",
+                width: "100%",
+              }}
+            >
+              <AppBar
+                sx={{
+                  position: "sticky",
+                  width: "100%",
+                  display: "flex",
+                  filter: "brightness(85%)",
+                }}
+              >
+                <Toolbar
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-evenly",
+                    width: "100%",
+                  }}
+                >
+                  {categoriesPages.map((page) => (
+                    <NavBtn key={page.eng} page={page} />
+                  ))}
+                </Toolbar>
+              </AppBar>
             </Box>
-          </Box>
-        </Container>
-      </AppBar>
+          </Slide>
+        </Box>
+      </Box>
     </Slide>
   );
 };

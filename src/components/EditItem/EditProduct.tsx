@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import DeleteImage from "../DeleteImage/DeleteImage";
 import { DeleteAlertContext } from "../../contexts/DeleteAlertContext";
+import { AlertContext } from "../../contexts/AlertContext";
 
 type Props = {
   product: ProductType;
@@ -30,9 +31,6 @@ const AddStone = (props: Props) => {
   const [currentImages, setCurrentImages] = useState<string[]>(
     currentProduct.imageFileNames
   );
-  const [alert, setAlert] = useState(false);
-  const [alertMsg, setAlertMsg] = useState("");
-  const [alertSeverity, setAlertSeverity] = useState("success");
   const [category, setCategory] = useState<string>(currentProduct.category);
   const [stone, setStone] = useState<string>(currentProduct.stone);
   const [images, setImages] = useState<{ preview: string[]; raw: string[] }>({
@@ -43,6 +41,7 @@ const AddStone = (props: Props) => {
   const stoneContext = useContext(StoneContext);
   const categoryContext = useContext(CategoryContext);
   const deleteAlertContext = useContext(DeleteAlertContext);
+  const { setAlert } = useContext(AlertContext);
 
   const {
     register,
@@ -50,13 +49,6 @@ const AddStone = (props: Props) => {
     handleSubmit,
     formState: { errors },
   } = useForm<ProductType>({});
-
-  const showAlert = (msg: string, severity: string) => {
-    setAlert(true);
-    setTimeout(() => {
-      setAlert(false);
-    }, 2000);
-  };
 
   const handleImageChange = (e: any) => {
     let previewImgs: string[] = [];
@@ -80,10 +72,10 @@ const AddStone = (props: Props) => {
           //201 response
           productsContext.refresh();
           props.close();
-          showAlert("Stone deleted successfully", "success");
+          setAlert("המוצר נמחק בהצלחה", "success");
         })
         .catch((e) => {
-          showAlert("There was an error deleting the stone", "error");
+          setAlert("הייתה בעיה במחיקת המוצר", "error");
         });
     });
     deleteAlertContext.toggleAlert();
@@ -99,11 +91,10 @@ const AddStone = (props: Props) => {
         console.log(res);
         productsContext.refresh();
         props.close();
-        showAlert("Stone created successfully", "success");
+        setAlert("המוצר עודכן בהצלחה", "success");
       })
       .catch((e) => {
-        setAlert(true);
-        showAlert("There was an error creating the stone", "error");
+        setAlert("הייתה בעיה בעדכון המוצר", "error");
       });
   };
 

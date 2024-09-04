@@ -18,15 +18,14 @@ import {
   TextField,
 } from "@mui/material";
 import AlertDialog from "../DeleteAlert/DeleteAlert";
+import { AlertContext } from "../../contexts/AlertContext";
 
 type Props = {
   close: () => void;
 };
 
 const AddStone = (props: Props) => {
-  const [alert, setAlert] = useState(false);
-  const [alertMsg, setAlertMsg] = useState("");
-  const [alertSeverity, setAlertSeverity] = useState("success");
+  const { setAlert } = useContext(AlertContext);
   const [category, setCategory] = useState<string>("");
   const [stone, setStone] = useState<string>("");
   const [images, setImages] = useState<{ preview: string[]; raw: string[] }>({
@@ -44,13 +43,6 @@ const AddStone = (props: Props) => {
     formState: { errors },
   } = useForm<ProductType>({});
 
-  const showAlert = (msg: string, severity: string) => {
-    setAlert(true);
-    setTimeout(() => {
-      setAlert(false);
-    }, 2000);
-  };
-
   const handleImageChange = (e: any) => {
     let previewImgs: string[] = [];
     if (e.target.files.length) {
@@ -63,8 +55,6 @@ const AddStone = (props: Props) => {
         raw: [...e.target.files, ...images.raw],
       });
     }
-    console.log(`preview: ${images.preview}`);
-    console.log(`raw: ${images.raw}`);
   };
 
   const onRegister = async (data: ProductType) => {
@@ -79,11 +69,10 @@ const AddStone = (props: Props) => {
         categoryContext.refresh();
         stoneContext.refresh();
         props.close();
-        showAlert("Stone created successfully", "success");
+        setAlert("המוצר נוסף בהצלחה", "success");
       })
       .catch((e) => {
-        setAlert(true);
-        showAlert("There was an error creating the stone", "error");
+        setAlert("הייתה בעיה בהוספת המוצר", "error");
       });
   };
 
@@ -273,7 +262,6 @@ const AddStone = (props: Props) => {
           </AccordionActions>
         </Stack>
       </Form>
-      {alert && <AlertDialog />}
     </AccordionDetails>
   );
 };

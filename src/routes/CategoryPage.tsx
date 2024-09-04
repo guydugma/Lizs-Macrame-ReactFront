@@ -6,7 +6,7 @@ import ProductCard from "../components/ProductCard/ProductCard";
 import { CategoryContext } from "../contexts/CategoryContext";
 
 const CategoryPage = () => {
-  const { category } = useParams();
+  const category = useParams().category?.replace("_", " ");
   const [categoryTitle, setCategoryTitle] = useState("");
   const filterContext = useContext(FilterContext);
   const categoryContext = useContext(CategoryContext);
@@ -14,7 +14,8 @@ const CategoryPage = () => {
   useEffect(() => {
     filterContext.filterByCategory(category ?? "");
     setCategoryTitle(categoryContext.getTitle(category ?? ""));
-  }, []);
+  }, [category]);
+  console.log(category);
 
   return (
     <Container sx={{ marginTop: 2, justifyContent: "center" }}>

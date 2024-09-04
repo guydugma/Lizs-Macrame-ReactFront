@@ -15,6 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import patterns from "../validation/patterns";
+import $ from "jquery";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const Login = () => {
         });
       })
       .catch((e) => {
-        dialogs.error("Login Error", e.response.data);
+        dialogs.error("Login Error", e.response.data.message);
       });
   };
 

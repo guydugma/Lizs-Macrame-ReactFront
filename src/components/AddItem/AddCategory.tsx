@@ -14,16 +14,15 @@ import AlertDialog from "../DeleteAlert/DeleteAlert";
 import { AuthContext } from "../../contexts/AuthContext";
 import "./AddCategory.scss";
 import { CategoryContext } from "../../contexts/CategoryContext";
+import { AlertContext } from "../../contexts/AlertContext";
 
 type Props = {
   close: () => void;
 };
 
 const AddCategory = (props: Props) => {
-  const [alert, setAlert] = useState(false);
-  const [alertMsg, setAlertMsg] = useState("");
-  const [alertSeverity, setAlertSeverity] = useState("success");
   const categoryContext = useContext(CategoryContext);
+  const { setAlert } = useContext(AlertContext);
 
   const {
     register,
@@ -32,25 +31,16 @@ const AddCategory = (props: Props) => {
     formState: { errors },
   } = useForm<CategoryType>({});
 
-  const showAlert = (msg: string, severity: string) => {
-    setAlert(true);
-    setTimeout(() => {
-      setAlert(false);
-    }, 2000);
-  };
-
   const onRegister = (data: CategoryType) => {
     addCategory(data)
       .then((res) => {
         //201 response
         categoryContext.refresh();
         props.close();
-        showAlert("Stone updated successfully", "success");
+        setAlert("הקטוגריה נוספה בהצלחה", "success");
       })
       .catch((e) => {
-        console.log(localStorage.getItem("token"));
-        setAlert(true);
-        showAlert("There was an error updating the stone", "error");
+        setAlert("הייתה בעיה בהוספת הקטוגריה", "error");
       });
   };
 

@@ -20,6 +20,7 @@ export const addProduct = (product: ProductType, images: string[]) => {
   return axios.post(productsUrl, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
+      "x-auth-token": localStorage.getItem("token"),
     },
   });
 };
@@ -37,10 +38,15 @@ export const editProduct = (
   return axios.put(`${productsUrl}/${productId}`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
+      "x-auth-token": localStorage.getItem("token"),
     },
   });
 };
 
 export const deleteProduct = (productId: string) => {
-  return axios.delete(`${productsUrl}/${productId}`);
+  return axios.delete(`${productsUrl}/${productId}`, {
+    headers: {
+      "x-auth-token": localStorage.getItem("token"),
+    },
+  });
 };

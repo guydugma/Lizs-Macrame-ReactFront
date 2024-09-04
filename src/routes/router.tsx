@@ -26,11 +26,11 @@ export const router = createBrowserRouter([
     // errorElement: <Error />,
     children: [
       { index: true, element: <Home /> },
-      { path: "/categories", element: <Categories /> },
+      // { path: "/categories", element: <Categories /> },
       { path: "/stones", element: <Stones /> },
       { path: "/products/:id", element: <ProductPage /> },
       { path: "/manage", element: <Manage /> },
-      { path: "/categories/:category", element: <CategoryPage /> },
+      { path: "/:category", element: <CategoryPage /> },
       { path: "/cart", element: <CartPage /> },
       { path: "/register", element: <Register /> },
       { path: "/login", element: <Login /> },

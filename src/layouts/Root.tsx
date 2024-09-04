@@ -8,6 +8,7 @@ import AlertDialog from "../components/DeleteAlert/DeleteAlert";
 import { DeleteAlertContext } from "../contexts/DeleteAlertContext";
 import { AlertContext } from "../contexts/AlertContext";
 import ActionAlert from "../components/ActionAlert/ActionAlert";
+import Header from "../components/Header/Header";
 
 const Root = () => {
   const deleteAlertContext = useContext(DeleteAlertContext);
@@ -15,7 +16,7 @@ const Root = () => {
 
   return (
     <div className="flex flex-col align-items-center min-h-screen w-screen">
-      <Navbar />
+      <Header />
       <Container
         maxWidth={"lg"}
         sx={{

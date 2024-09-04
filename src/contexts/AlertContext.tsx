@@ -8,6 +8,7 @@ export const AlertContext = createContext({
   toggleAlert: () => {},
   changeSeverity: (string) => {},
   changeMsg: (string) => {},
+  setAlert: (newMsg: string, newSeverity: AlertColor) => {},
 });
 
 export const AlertProvider = ({ children }) => {
@@ -19,7 +20,7 @@ export const AlertProvider = ({ children }) => {
     setShowAlert(true);
     setTimeout(() => {
       setShowAlert(false);
-    }, 2000);
+    }, 3000);
   };
 
   const changeSeverity = (newSeverity: AlertColor) => {
@@ -30,10 +31,17 @@ export const AlertProvider = ({ children }) => {
     setMsg(newMsg);
   };
 
+  const setAlert = (newMsg: string, newSeverity: AlertColor) => {
+    changeMsg(newMsg);
+    changeSeverity(newSeverity);
+    toggleAlert();
+  };
+
   return (
     <AlertContext.Provider
       value={{
         showAlert,
+        setAlert,
         severity,
         msg,
         toggleAlert,

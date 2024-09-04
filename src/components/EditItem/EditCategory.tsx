@@ -25,10 +25,9 @@ type Props = {
 const EditCategory = (props: Props) => {
   let currentCategory = props.category;
   const [category, setCategory] = useState(currentCategory);
-  const [alert, setAlert] = useState(false);
+  const { setAlert } = useContext(AlertContext);
   const deleteAlertContext = useContext(DeleteAlertContext);
   const categoryContext = useContext(CategoryContext);
-  const alertContext = useContext(AlertContext);
 
   const {
     register,
@@ -36,15 +35,6 @@ const EditCategory = (props: Props) => {
     handleSubmit,
     formState: { errors },
   } = useForm<CategoryType>({});
-
-  const showAlert = (msg: string, severity: string) => {
-    alertContext.changeMsg(msg);
-    alertContext.changeSeverity(severity);
-    alertContext.toggleAlert(true);
-    setTimeout(() => {
-      alertContext.toggleAlert(false);
-    }, 2000);
-  };
 
   const onDelete = () => {
     deleteAlertContext.setMessage(category.hebTitle);
@@ -54,10 +44,10 @@ const EditCategory = (props: Props) => {
           //201 response
           props.close();
           categoryContext.refresh();
-          showAlert("הקטגוריה נמחקה בהצלחה", "success");
+          setAlert("הקטגוריה נמחקה בהצלחה", "success");
         })
         .catch((e) => {
-          showAlert("הייתה בעיה במחיקת הקטגוריה", "error");
+          setAlert("הייתה בעיה במחיקת הקטגוריה", "error");
         });
     });
     deleteAlertContext.toggleAlert();
@@ -69,10 +59,10 @@ const EditCategory = (props: Props) => {
         //201 response
         props.close();
         categoryContext.refresh();
-        showAlert("הקטגוריה עודכנה בהצלחה", "success");
+        setAlert("הקטגוריה עודכנה בהצלחה", "success");
       })
       .catch((e) => {
-        showAlert("הייתה בעיה בעדכון הקטגוריה", "error");
+        setAlert("הייתה בעיה בעדכון הקטגוריה", "error");
       });
   };
 

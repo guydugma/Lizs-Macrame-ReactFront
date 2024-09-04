@@ -12,9 +12,11 @@ import { CategoryContextProvider } from "./contexts/CategoryContext.tsx";
 import { ProductsContextProvider } from "./contexts/ProductsContext.tsx";
 import FilterContextProvider from "./contexts/FilterContext.tsx";
 import { AlertProvider } from "./contexts/AlertContext.tsx";
+import { CssBaseline } from "@mui/material";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
+    <CssBaseline />
     <ScrollContextProvider>
       <DeleteAlertProvider>
         <AlertProvider>

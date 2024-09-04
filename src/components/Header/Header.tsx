@@ -1,18 +1,19 @@
-
 import Navbar from "../Navbar/Navbar";
-import { Container, Slide } from "@mui/material";
-import useScrollTrigger from '@mui/material/useScrollTrigger';
+import { Box, Container, Slide } from "@mui/material";
+import useScrollTrigger from "@mui/material/useScrollTrigger";
 import React from "react";
 
-
-
-
 const Header = React.forwardRef(function Header() {
-
   return (
-    <Container sx={{ position: 'relative' }}>
+    <Box
+      sx={{
+        width: "100%",
+        marginBottom: { xs: "none", sm: "10rem", md: "20rem" },
+        zIndex: 1000,
+      }}
+    >
       <Navbar />
-    </Container>
+    </Box>
   );
 });
 

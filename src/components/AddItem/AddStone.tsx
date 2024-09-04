@@ -23,6 +23,7 @@ import Menu from "@mui/material/Menu";
 import "./AddStone.scss";
 import { Style } from "@mui/icons-material";
 import { StoneContext } from "../../contexts/StoneContext";
+import { AlertContext } from "../../contexts/AlertContext";
 
 const zodiacs = [
   "מאזניים",
@@ -44,9 +45,7 @@ type Props = {
 };
 
 const AddStone = (props: Props) => {
-  const [alert, setAlert] = useState(false);
-  const [alertMsg, setAlertMsg] = useState("");
-  const [alertSeverity, setAlertSeverity] = useState("success");
+  const { setAlert } = useContext(AlertContext);
   const [zodiac, setZodiac] = useState<string>("");
   const [image, setImage] = useState({ preview: "", raw: "" });
   const stoneContext = useContext(StoneContext);
@@ -57,13 +56,6 @@ const AddStone = (props: Props) => {
     handleSubmit,
     formState: { errors },
   } = useForm<StoneType>({});
-
-  const showAlert = (msg: string, severity: string) => {
-    setAlert(true);
-    setTimeout(() => {
-      setAlert(false);
-    }, 2000);
-  };
 
   const handleImageChange = (e: any) => {
     if (e.target.files.length) {
@@ -83,12 +75,11 @@ const AddStone = (props: Props) => {
         //201 response
         console.log(res);
         stoneContext.refresh();
-        showAlert("Stone created successfully", "success");
+        setAlert("האבן נוספה בהצלחה", "success");
         props.close();
       })
       .catch((e) => {
-        setAlert(true);
-        showAlert("There was an error creating the stone", "error");
+        setAlert("הייתה בעיה בהוספת האבן", "error");
       });
   };
 
@@ -205,7 +196,6 @@ const AddStone = (props: Props) => {
           </AccordionActions>
         </Stack>
       </Form>
-      {alert && <AlertDialog />}
     </AccordionDetails>
   );
 };

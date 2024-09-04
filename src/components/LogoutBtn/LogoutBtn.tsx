@@ -1,6 +1,7 @@
 import { Button, MenuItem, Typography } from "@mui/material";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   closeMenu: () => void;
@@ -9,6 +10,7 @@ type Props = {
 export const LogoutMenuBtn = (props: Props) => {
   const authContext = useContext(AuthContext);
   const logout = authContext.logout;
+
   return (
     <MenuItem
       sx={{ textAlign: "center", width: "50vw" }}
@@ -25,9 +27,16 @@ export const LogoutMenuBtn = (props: Props) => {
 export const LogoutBtn = () => {
   const authContext = useContext(AuthContext);
   const logout = authContext.logout;
+  const navigate = useNavigate();
 
   return (
-    <Button onClick={logout} sx={{ color: "inherit" }}>
+    <Button
+      onClick={() => {
+        logout();
+        navigate("/");
+      }}
+      sx={{ color: "inherit" }}
+    >
       <Typography variant="h6">התנתקות</Typography>
     </Button>
   );

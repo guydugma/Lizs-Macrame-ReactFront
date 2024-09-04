@@ -8,7 +8,11 @@ export const categoriesUrl = `${
 export const getCategories = () => axios.get(categoriesUrl);
 
 export const editCategory = (id: string, category: CategoryType) =>
-  axios.put(`${categoriesUrl}/${id}`, category);
+  axios.put(`${categoriesUrl}/${id}`, category, {
+    headers: {
+      "x-auth-token": localStorage.getItem("token"),
+    },
+  });
 
 export const addCategory = (data: CategoryType) =>
   axios.post(categoriesUrl, data, {
@@ -18,4 +22,8 @@ export const addCategory = (data: CategoryType) =>
   });
 
 export const deleteCategory = (id: string) =>
-  axios.delete(`${categoriesUrl}/${id}`);
+  axios.delete(`${categoriesUrl}/${id}`, {
+    headers: {
+      "x-auth-token": localStorage.getItem("token"),
+    },
+  });
